@@ -7,19 +7,17 @@ import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "Task")
+@Table
 public class Task implements Serializable
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Column
     @NotBlank(message = "Description cannot be empty")
     @Size(max = 100, message = "Description should be within 100 characters")
     String description;
 
-    @Column
     Boolean completed;
 
     public Task()

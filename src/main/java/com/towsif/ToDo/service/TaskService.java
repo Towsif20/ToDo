@@ -2,18 +2,15 @@ package com.towsif.ToDo.service;
 
 import com.towsif.ToDo.entity.Task;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 
 public interface TaskService
 {
     Task createTask(Task task);
 
-    Page<Task> getAllTasks(Pageable pageable);
+    Page<Task> getAllTasks(int page, int size, String sortBy, String sortOrder, String subString);
 
     Task getTaskById(Long id);
 
-    Page<Task> getTasksByDescription(String substring, Pageable pageable);
 
     String deleteTaskById(Long id);
 

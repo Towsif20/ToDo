@@ -6,7 +6,6 @@ import com.towsif.ToDo.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -17,6 +16,9 @@ public class TaskServiceImplementation implements TaskService
     @Autowired
     private TaskRepository taskRepository;
 
+    @Autowired
+    private TaskPaginationService taskPaginationService;
+
     @Override
     public Task createTask(Task task)
     {
@@ -24,9 +26,14 @@ public class TaskServiceImplementation implements TaskService
     }
 
     @Override
-    public Page<Task> getAllTasks(Pageable pageable)
+    public Page<Task> getAllTasks(int page, int size, String sortBy, String sortOrder, String subString)
     {
-        return taskRepository.findAll(pageable);
+        Pageable pageable = taskPaginationService.configurePaginationAndSorting(page, size, sortBy, sortOrder);
+
+        if(subString.isEmpty())
+            return taskRepository.findAll(pageable);
+
+        return taskRepository.findByDescriptionContainingIgnoreCase(subString, pageable);
     }
 
     public Task getTaskById(Long id)
@@ -37,12 +44,6 @@ public class TaskServiceImplementation implements TaskService
             throw new TaskNotFoundException("Task not found with id " + id);
 
         return taskOptional.get();
-    }
-
-    @Override
-    public Page<Task> getTasksByDescription(String substring, Pageable pageable)
-    {
-        return taskRepository.findByDescriptionContainingIgnoreCase(substring, pageable);
     }
 
     @Override
